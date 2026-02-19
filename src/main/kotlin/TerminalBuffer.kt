@@ -168,4 +168,36 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
         recycledRow.clear()
         rows.addLast(recycledRow)
     }
+
+    /**
+     * Clears the visible portion of the terminal screen starting from the current scrollback position.
+     *
+     * Iterates over all rows in the buffer from the current scrollback index to the total number of rows
+     * and clears their content. Clearing a row resets its cells to their default state, including
+     * character, foreground color, background color, and style.
+     *
+     * This method does not modify rows outside the visible portion of the terminal.
+     */
+    fun clearScreen() {
+        for (i in currentScrollback until rows.size) {
+            rows[i].clear()
+        }
+    }
+
+    /**
+     * Clears the entire terminal buffer by resetting the content of all rows to their default state.
+     *
+     * Each row in the buffer is iterated over and cleared. Clearing a row involves resetting
+     * all its cells to their default configuration, which typically includes:
+     * - `character = null`
+     * - `foregroundColor = Color.DEFAULT`
+     * - `backgroundColor = Color.DEFAULT`
+     * - `style = Style.NORMAL`
+     *
+     * This method operates on all rows in the buffer, including those in the scrollback area,
+     * effectively ensuring a completely clean state for the terminal buffer.
+     */
+    fun clearBuffer() {
+        rows.forEach { it.clear() }
+    }
 }
