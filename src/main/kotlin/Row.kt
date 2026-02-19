@@ -47,4 +47,8 @@ class Row(width: Int) {
     fun fill(cell: CharacterCell) {
         cells.fill(cell)
     }
+
+    fun clear() {
+        fill(CharacterCell(null, Color.DEFAULT, Color.DEFAULT, Style.NORMAL))
+    }
 }

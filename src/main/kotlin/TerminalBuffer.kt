@@ -2,6 +2,13 @@ package org.example
 
 class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     private var rows = ArrayDeque<Row>(height + maxScrollback)
+
+    init {
+        repeat(height + maxScrollback) {
+            rows.addLast(Row(width))
+        }
+    }
+
     var cursorPosition = Pair(0, height - 1)
         set(value) {
             val (x, y) = value
@@ -100,8 +107,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     fun write(text: String) {
         for (c in text) {
             rows[cursorPosition.second].overwrite(
-                cursorPosition.first,
-                CharacterCell(c, foregroundColor, backgroundColor, style)
+                cursorPosition.first, CharacterCell(c, foregroundColor, backgroundColor, style)
             )
             moveCursorRight()
         }
@@ -118,8 +124,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     fun insert(text: String) {
         for (c in text) {
             var overflowed = rows[cursorPosition.second].insert(
-                cursorPosition.first,
-                CharacterCell(c, foregroundColor, backgroundColor, style)
+                cursorPosition.first, CharacterCell(c, foregroundColor, backgroundColor, style)
             )
             var overflowRowIndex = cursorPosition.second + 1
             while (overflowed.character != null) {
@@ -142,5 +147,25 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      */
     fun fillRow(char: Char?) {
         rows[cursorPosition.second].fill(CharacterCell(char, foregroundColor, backgroundColor, style))
+    }
+
+    /**
+     * Adds a new row to the terminal buffer while reusing an existing, recycled row to maintain
+     * consistent buffer size and improve performance.
+     *
+     * The first row from the buffer is removed, cleared, and repopulated with default character cells,
+     * then added back to the end of the buffer. This ensures the buffer retains a fixed size by
+     * recycling rows instead of creating new ones.
+     *
+     * The cleared row is populated using the default `CharacterCell` configuration, which includes:
+     * - `character = null`
+     * - `foregroundColor = Color.DEFAULT`
+     * - `backgroundColor = Color.DEFAULT`
+     * - `style = Style.NORMAL`
+     */
+    fun addRow() {
+        val recycledRow = rows.removeFirst()
+        recycledRow.clear()
+        rows.addLast(recycledRow)
     }
 }
