@@ -28,4 +28,12 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     fun moveCursorDown(n: Int = 1) = moveCursor(Direction.DOWN, n)
     fun moveCursorLeft(n: Int = 1) = moveCursor(Direction.LEFT, n)
     fun moveCursorRight(n: Int = 1) = moveCursor(Direction.RIGHT, n)
+
+    fun scrollUp(n: Int = 1) {
+        currentScrollback = (currentScrollback + n).coerceAtMost(maxScrollback)
+    }
+
+    fun scrollDown(n: Int = 1) {
+        currentScrollback = (currentScrollback - n).coerceAtLeast(0)
+    }
 }
