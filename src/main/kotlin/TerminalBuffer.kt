@@ -109,6 +109,8 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
             rows[cursorPosition.second].overwrite(
                 cursorPosition.first, CharacterCell(c, foregroundColor, backgroundColor, style)
             )
+
+            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) addRow()
             moveCursorRight()
         }
     }
@@ -128,13 +130,13 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
             )
             var overflowRowIndex = cursorPosition.second + 1
             while (overflowed.character != null) {
-                if (overflowRowIndex >= rows.size) {
-                    // TODO: add a new row
-                    break
-                }
+                if (overflowRowIndex >= rows.size) addRow()
+
                 overflowed = rows[overflowRowIndex].insert(0, overflowed)
                 overflowRowIndex++
             }
+
+            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) addRow()
             moveCursorRight()
         }
     }
