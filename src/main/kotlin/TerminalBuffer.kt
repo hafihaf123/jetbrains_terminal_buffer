@@ -5,7 +5,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     var cursorPosition = Pair(0, height - 1)
         set(value) {
             val (x, y) = value
-            field = Pair(x.coerceIn(0, width - 1), y.coerceIn(0, currentScrollback + height - 1))
+            field = Pair(x.coerceIn(0, width - 1), y.coerceIn(currentScrollback, currentScrollback + height - 1))
         }
     private var currentScrollback = 0
 
@@ -25,8 +25,21 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
         cursorPosition = when (direction) {
             Direction.UP -> cursorPosition.first to cursorPosition.second + n
             Direction.DOWN -> cursorPosition.first to cursorPosition.second - n
-            Direction.LEFT -> cursorPosition.first - n to cursorPosition.second
-            Direction.RIGHT -> cursorPosition.first + n to cursorPosition.second
+            Direction.LEFT -> {
+                val adjustedX = cursorPosition.first - n
+                val x = adjustedX.mod(width)
+                val y = cursorPosition.second - adjustedX.floorDiv(width)
+
+                x to y
+            }
+
+            Direction.RIGHT -> {
+                val adjustedX = cursorPosition.first + n
+                val x = adjustedX.mod(width)
+                val y = cursorPosition.second + adjustedX.floorDiv(width)
+
+                x to y
+            }
         }
     }
 
