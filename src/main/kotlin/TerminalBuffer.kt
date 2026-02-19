@@ -133,4 +133,14 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
             moveCursorRight()
         }
     }
+
+    /**
+     * Fills the current row at the cursor position with the specified character, applying the current
+     * foreground color, background color, and style settings to all cells in the row.
+     *
+     * @param char The character to fill the row with. If null, the row will be filled with empty cells.
+     */
+    fun fillRow(char: Char?) {
+        rows[cursorPosition.second].fill(CharacterCell(char, foregroundColor, backgroundColor, style))
+    }
 }

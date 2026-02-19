@@ -38,4 +38,13 @@ class Row(width: Int) {
         overwrite(pos, cell)
         return last
     }
+
+    /**
+     * Fills the entire row by replacing all cells with the specified `CharacterCell`.
+     *
+     * @param cell The `CharacterCell` to populate all positions in the row.
+     */
+    fun fill(cell: CharacterCell) {
+        cells.fill(cell)
+    }
 }
