@@ -88,4 +88,22 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     fun scrollDown(n: Int = 1) {
         currentScrollback = (currentScrollback - n).coerceAtLeast(0)
     }
+
+    /**
+     * Writes the specified text to the terminal buffer starting at the current cursor position, overriding the content.
+     *
+     * Each character in the text will overwrite the corresponding position in the buffer,
+     * and the cursor will move right after writing each character.
+     *
+     * @param text The text to be written to the terminal buffer. Each character will be written sequentially.
+     */
+    fun write(text: String) {
+        for (c in text) {
+            cells[cursorPosition.second].overwrite(
+                cursorPosition.first,
+                CharacterCell(c, foregroundColor, backgroundColor, style)
+            )
+            moveCursorRight()
+        }
+    }
 }
