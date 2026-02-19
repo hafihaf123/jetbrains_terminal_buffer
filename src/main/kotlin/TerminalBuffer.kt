@@ -1,7 +1,7 @@
 package org.example
 
 class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
-    private var cells = ArrayDeque<Row>(height + maxScrollback)
+    private var rows = ArrayDeque<Row>(height + maxScrollback)
     var cursorPosition = Pair(0, height - 1)
         set(value) {
             val (x, y) = value
@@ -99,10 +99,37 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      */
     fun write(text: String) {
         for (c in text) {
-            cells[cursorPosition.second].overwrite(
+            rows[cursorPosition.second].overwrite(
                 cursorPosition.first,
                 CharacterCell(c, foregroundColor, backgroundColor, style)
             )
+            moveCursorRight()
+        }
+    }
+
+    /**
+     * Inserts the specified text into the terminal buffer starting at the current cursor position.
+     * Each character is inserted sequentially, and the cursor is moved right after each insertion.
+     * Handles overflowed cells by shifting them to later rows if necessary.
+     *
+     * @param text The text to insert. Each character in the provided string will be inserted
+     *             one by one into the buffer at the current cursor position.
+     */
+    fun insert(text: String) {
+        for (c in text) {
+            var overflowed = rows[cursorPosition.second].insert(
+                cursorPosition.first,
+                CharacterCell(c, foregroundColor, backgroundColor, style)
+            )
+            var overflowRowIndex = cursorPosition.second + 1
+            while (overflowed.character != null) {
+                if (overflowRowIndex >= rows.size) {
+                    // TODO: add a new row
+                    break
+                }
+                overflowed = rows[overflowRowIndex].insert(0, overflowed)
+                overflowRowIndex++
+            }
             moveCursorRight()
         }
     }
