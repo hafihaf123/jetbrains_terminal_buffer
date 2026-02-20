@@ -147,14 +147,15 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
             )
             var overflowRowIndex = cursorPosition.second - 1
             while (overflowed.character != null) {
-                overflowed = rows[overflowRowIndex].insert(0, overflowed)
-
-                if (overflowRowIndex == 0) {
+                if (overflowRowIndex < 0) {
                     addRow()
-                } else {
-                    overflowRowIndex--
+                    moveCursorUp()
+                    overflowRowIndex = 0
                 }
+                overflowed = rows[overflowRowIndex].insert(0, overflowed)
+                overflowRowIndex--
             }
+
 
             if (cursorPosition.first == width - 1 && cursorPosition.second == 0) {
                 addRow()
@@ -281,6 +282,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * where 0 corresponds to the bottom-most row in the buffer.
      * @return The content of the specified row as a string.
      */
+    @Suppress("unused")
     fun getLine(y: Int): String = rows[y].toString()
 
     /**

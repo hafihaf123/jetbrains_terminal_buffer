@@ -253,8 +253,9 @@ class TerminalBufferTest {
             scrollDown(maxScrollback)
             cursorPosition = width - 1 to 0
             assertCursorAt(width - 1, 0)
+            fillRow('_')
             insert("Hello, world!")
-            assertBuffer("H\nello, world!")
+            assertBuffer("_".repeat(width - 1) + "H" + "\n" + "ello, world!_")
         }
     }
 
