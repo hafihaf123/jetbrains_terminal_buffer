@@ -48,6 +48,14 @@ class Row(width: Int) {
         cells.fill(cell)
     }
 
+    /**
+     * Clears the row by filling all its positions with a default `CharacterCell`.
+     *
+     * The default `CharacterCell` has:
+     * - A `null` character.
+     * - Both foreground and background colors set to `Color.DEFAULT`.
+     * - Style set to `Style.NORMAL`.
+     */
     fun clear() {
         fill(CharacterCell(null, Color.DEFAULT, Color.DEFAULT, Style.NORMAL))
     }
