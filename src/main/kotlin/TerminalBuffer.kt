@@ -202,4 +202,50 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
     fun clearBuffer() {
         rows.forEach { it.clear() }
     }
+
+    /**
+     * Retrieves the character cell at the specified coordinates in the terminal buffer.
+     *
+     * @param x The horizontal position of the cell, where 0 is the leftmost column.
+     * @param y The vertical position of the cell, where 0 is the bottom-most row.
+     * @return The `CharacterCell` object of the specified cell.
+     *         This includes the character, foreground color, background color, and style information.
+     */
+    fun getCellAt(x: Int, y: Int): CharacterCell = rows[y].cells[x]
+
+    /**
+     * Retrieves the character at the specified coordinates in the terminal buffer.
+     *
+     * @param x The horizontal position of the cell, where 0 is the leftmost column.
+     * @param y The vertical position of the cell, where 0 is the bottom-most row.
+     * @return The character of the specified cell, or null if the cell is empty.
+     */
+    fun getCharacterAt(x: Int, y: Int): Char? = getCellAt(x, y).character
+
+    /**
+     * Retrieves the foreground color at the specified coordinates in the terminal buffer.
+     *
+     * @param x The horizontal position of the cell, where 0 is the leftmost column.
+     * @param y The vertical position of the cell, where 0 is the bottom-most row.
+     * @return The foreground color of the specified cell.
+     */
+    fun getFgColorAt(x: Int, y: Int): Color = getCellAt(x, y).foregroundColor
+
+    /**
+     * Retrieves the background color at the specified coordinates in the terminal buffer.
+     *
+     * @param x The horizontal position of the cell, where 0 is the leftmost column.
+     * @param y The vertical position of the cell, where 0 is the bottom-most row.
+     * @return The background color of the specified cell.
+     */
+    fun getBgColorAt(x: Int, y: Int): Color = getCellAt(x, y).backgroundColor
+
+    /**
+     * Retrieves the style of the character cell at the specified coordinates in the terminal buffer.
+     *
+     * @param x The horizontal position of the cell, where 0 is the leftmost column.
+     * @param y The vertical position of the cell, where 0 is the bottom-most row.
+     * @return The style applied to the specified cell.
+     */
+    fun getStyleAt(x: Int, y: Int): Style = getCellAt(x, y).style
 }
