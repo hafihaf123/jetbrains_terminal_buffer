@@ -37,15 +37,23 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
                 val x = adjustedX.mod(width)
                 val y = cursorPosition.second - adjustedX.floorDiv(width)
 
-                x to y
+                if (y >= currentScrollback + height) {
+                    0 to y
+                } else {
+                    x to y
+                }
             }
 
             Direction.RIGHT -> {
                 val adjustedX = cursorPosition.first + n
                 val x = adjustedX.mod(width)
-                val y = cursorPosition.second + adjustedX.floorDiv(width)
+                val y = cursorPosition.second - adjustedX.floorDiv(width)
 
-                x to y
+                if (y < currentScrollback) {
+                    width - 1 to y
+                } else {
+                    x to y
+                }
             }
         }
     }
