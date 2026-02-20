@@ -106,7 +106,65 @@ class TerminalBufferTest {
     }
 
     @Nested
+    inner class Scrolling {
+        @Test
+        fun `scrolling up`() = with(terminalBuffer) {
+            cursorPosition = 0 to 0
+            assertCursorAt(0, 0)
+
+            scrollUp(2)
+            assertCursorAt(0, 2)
+
+            // scrolling up when at the top of the buffer should not change the cursor position
+            scrollUp(maxScrollback)
+            assertCursorAt(0, maxScrollback)
+            scrollUp(5)
+            assertCursorAt(0, maxScrollback)
+        }
+
+        @Test
+        fun `scrolling down`() = with(terminalBuffer) {
+            cursorPosition = 0 to height - 1
+            assertCursorAt(0, height - 1)
+
+            // scrolling down when at the bottom of the buffer should not change the cursor position
+            scrollDown(2)
+            assertCursorAt(0, height - 1)
+        }
+    }
+
+    @Nested
     inner class Editing {
+        @Test
+        fun `adding a new row to the terminal buffer should remove the last one`() = with(terminalBuffer) {
+            scrollUp(maxScrollback)
+            cursorPosition = 0 to height + maxScrollback - 1
+            assertCursorAt(0, height + maxScrollback - 1)
+            write("test")
+            assertBuffer("test")
+
+            addRow()
+            assertBuffer("")
+        }
+
+        @Test
+        fun `clearing the visible portion of the terminal screen`() = with(terminalBuffer) {
+            scrollUp(maxScrollback)
+            cursorPosition = 0 to height + maxScrollback - 1
+            assertCursorAt(0, height + maxScrollback - 1)
+            write("test")
+            assertBuffer("test")
+
+            // shouldn't clear outside the screen bounds
+            scrollDown()
+            clearScreen()
+            assertBuffer("test")
+
+            scrollUp()
+            clearScreen()
+            assertBuffer("")
+        }
+
         @Test
         fun `writing text to the terminal buffer`() = with(terminalBuffer) {
             assertCursorAt(0, height - 1)

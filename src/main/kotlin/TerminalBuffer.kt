@@ -93,6 +93,8 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      */
     fun scrollUp(n: Int = 1) {
         currentScrollback = (currentScrollback + n).coerceAtMost(maxScrollback)
+        // enforce cursor position within the visible portion of the buffer
+        cursorPosition = cursorPosition.first to cursorPosition.second
     }
 
     /**
@@ -102,6 +104,8 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      */
     fun scrollDown(n: Int = 1) {
         currentScrollback = (currentScrollback - n).coerceAtLeast(0)
+        // enforce cursor position within the visible portion of the buffer
+        cursorPosition = cursorPosition.first to cursorPosition.second
     }
 
     /**
