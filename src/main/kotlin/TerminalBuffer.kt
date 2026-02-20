@@ -268,13 +268,13 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * @return A string representation of the visible terminal screen content,
      *         with each row separated by a newline.
      */
-    fun getScreen(): String =
-        rows.subList(currentScrollback, currentScrollback + height).joinToString(separator = "\n") { it.toString() }
+    fun getScreen(): String = rows.subList(currentScrollback, currentScrollback + height).reversed()
+        .joinToString(separator = "\n") { it.toString() }
 
     /**
      * Returns a string representation of the object.
      *
      * @return a string constructed by joining the rows with a newline separator
      */
-    override fun toString(): String = rows.joinToString(separator = "\n")
+    override fun toString(): String = rows.reversed().joinToString(separator = "\n")
 }
