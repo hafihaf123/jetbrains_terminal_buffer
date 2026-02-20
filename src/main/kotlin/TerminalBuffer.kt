@@ -153,7 +153,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
 
     /**
      * Adds a new row to the terminal buffer while reusing an existing, recycled row to maintain
-     * consistent buffer size and improve performance.
+     * a consistent buffer size and improve performance.
      *
      * The first row from the buffer is removed, cleared, and repopulated with default character cells,
      * then added back to the end of the buffer. This ensures the buffer retains a fixed size by

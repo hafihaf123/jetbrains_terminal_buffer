@@ -18,7 +18,7 @@ class Row(width: Int) {
 
     /**
      * Inserts a `CharacterCell` at the specified position in the row and shifts the existing cells
-     * to the right if necessary. The last cell in the row is discarded, and is returned by the method.
+     * to the right if necessary. The last cell in the row is discarded and is returned by the method.
      *
      * @param pos The position in the row where the new `CharacterCell` should be inserted.
      *            Must be within the bounds of the row's width.
