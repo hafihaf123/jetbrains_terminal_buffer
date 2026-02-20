@@ -67,4 +67,6 @@ class Row(width: Int) {
      * @return A string formed by joining the characters of all cells in the row.
      */
     override fun toString(): String = cells.joinToString(separator = "")
+
+    internal fun toDebugString(): String = cells.joinToString(separator = "") { it.character?.toString() ?: "" }
 }

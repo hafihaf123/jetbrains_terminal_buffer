@@ -118,8 +118,13 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
                 cursorPosition.first, CharacterCell(c, foregroundColor, backgroundColor, style)
             )
 
-            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) addRow()
-            moveCursorRight()
+            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) {
+                addRow()
+                scrollDown()
+                cursorPosition = 0 to 0
+            } else {
+                moveCursorRight()
+            }
         }
     }
 
@@ -136,16 +141,24 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
             var overflowed = rows[cursorPosition.second].insert(
                 cursorPosition.first, CharacterCell(c, foregroundColor, backgroundColor, style)
             )
-            var overflowRowIndex = cursorPosition.second + 1
+            var overflowRowIndex = cursorPosition.second - 1
             while (overflowed.character != null) {
-                if (overflowRowIndex >= rows.size) addRow()
-
                 overflowed = rows[overflowRowIndex].insert(0, overflowed)
-                overflowRowIndex++
+
+                if (overflowRowIndex == 0) {
+                    addRow()
+                } else {
+                    overflowRowIndex--
+                }
             }
 
-            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) addRow()
-            moveCursorRight()
+            if (cursorPosition.first == width - 1 && cursorPosition.second == 0) {
+                addRow()
+                scrollDown()
+                cursorPosition = 0 to 0
+            } else {
+                moveCursorRight()
+            }
         }
     }
 
@@ -174,9 +187,9 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * - `style = Style.NORMAL`
      */
     fun addRow() {
-        val recycledRow = rows.removeFirst()
+        val recycledRow = rows.removeLast()
         recycledRow.clear()
-        rows.addLast(recycledRow)
+        rows.addFirst(recycledRow)
     }
 
     /**
@@ -189,7 +202,7 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * This method does not modify rows outside the visible portion of the terminal.
      */
     fun clearScreen() {
-        for (i in currentScrollback until rows.size) {
+        for (i in currentScrollback..<currentScrollback + height) {
             rows[i].clear()
         }
     }
@@ -285,4 +298,6 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * @return a string constructed by joining the rows with a newline separator
      */
     override fun toString(): String = rows.reversed().joinToString(separator = "\n")
+
+    internal fun toDebugString(): String = rows.reversed().joinToString(separator = "\n") { it.toDebugString() }
 }
