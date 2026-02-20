@@ -248,4 +248,33 @@ class TerminalBuffer(val width: Int, val height: Int, val maxScrollback: Int) {
      * @return The style applied to the specified cell.
      */
     fun getStyleAt(x: Int, y: Int): Style = getCellAt(x, y).style
+
+    /**
+     * Retrieves the content of a specific row in the terminal buffer as a string.
+     *
+     * @param y The index of the row to retrieve. The index is zero-based,
+     * where 0 corresponds to the bottom-most row in the buffer.
+     * @return The content of the specified row as a string.
+     */
+    fun getLine(y: Int): String = rows[y].toString()
+
+    /**
+     * Retrieves the visible content of the terminal screen as a string.
+     *
+     * The method collects rows from the terminal buffer starting at the current
+     * scrollback position up to the visible height of the terminal. Each row's
+     * content is joined into a single string, with rows separated by newlines.
+     *
+     * @return A string representation of the visible terminal screen content,
+     *         with each row separated by a newline.
+     */
+    fun getScreen(): String =
+        rows.subList(currentScrollback, currentScrollback + height).joinToString(separator = "\n") { it.toString() }
+
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string constructed by joining the rows with a newline separator
+     */
+    override fun toString(): String = rows.joinToString(separator = "\n")
 }

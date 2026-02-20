@@ -59,4 +59,12 @@ class Row(width: Int) {
     fun clear() {
         fill(CharacterCell(null, Color.DEFAULT, Color.DEFAULT, Style.NORMAL))
     }
+
+    /**
+     * Generates a string representation of the row by concatenating the characters
+     * of all `CharacterCell` objects in the row without any separators.
+     *
+     * @return A string formed by joining the characters of all cells in the row.
+     */
+    override fun toString(): String = cells.joinToString(separator = "") { it.character.toString() }
 }
