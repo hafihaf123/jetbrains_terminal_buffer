@@ -257,4 +257,48 @@ class TerminalBufferTest {
             assertBuffer("H\nello, world!")
         }
     }
+
+    @Nested
+    inner class ContentAccess {
+        @Test
+        fun `getting the character at a given position`() = with(terminalBuffer) {
+            assertCursorAt(0, height - 1)
+            write("Hello, world!")
+            assert(getCharacterAt(0, height - 1) == 'H')
+            assert(getCharacterAt(12, height - 1) == '!')
+        }
+
+        @Test
+        fun `getting the foreground color at a given position`() = with(terminalBuffer) {
+            assertCursorAt(0, height - 1)
+            foregroundColor = Color.RED
+            write("Hello, ")
+            foregroundColor = Color.DEFAULT
+            write("world!")
+            assert(getFgColorAt(0, height - 1) == Color.RED)
+            assert(getFgColorAt(12, height - 1) == Color.DEFAULT)
+        }
+
+        @Test
+        fun `getting the background color at a given position`() = with(terminalBuffer) {
+            assertCursorAt(0, height - 1)
+            backgroundColor = Color.RED
+            write("Hello, ")
+            backgroundColor = Color.DEFAULT
+            write("world!")
+            assert(getBgColorAt(0, height - 1) == Color.RED)
+            assert(getBgColorAt(12, height - 1) == Color.DEFAULT)
+        }
+
+        @Test
+        fun `getting the style at a given position`() = with(terminalBuffer) {
+            assertCursorAt(0, height - 1)
+            style = Style.BOLD
+            write("Hello, ")
+            style = Style.NORMAL
+            write("world!")
+            assert(getStyleAt(0, height - 1) == Style.BOLD)
+            assert(getStyleAt(12, height - 1) == Style.NORMAL)
+        }
+    }
 }
